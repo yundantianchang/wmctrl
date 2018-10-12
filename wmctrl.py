@@ -4,8 +4,8 @@ import os
 from subprocess import getoutput
 from collections import namedtuple
 
-
 BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role wm_state')
+
 
 class Window(BaseWindow):
 
@@ -14,8 +14,8 @@ class Window(BaseWindow):
         out = getoutput('wmctrl -l -G -p -x')
         windows = []
         for line in out.splitlines():
-            parts = line.split(None, len(Window._fields)-3)
-            if len(parts) == 9: # title is missing
+            parts = line.split(None, len(Window._fields) - 3)
+            if len(parts) == 9:  # title is missing
                 parts.append('')
             parts = list(map(str.strip, parts))
             parts[1:7] = list(map(int, parts[1:7]))
@@ -75,9 +75,9 @@ class Window(BaseWindow):
         x, y = list(map(int, pos.split('+')))
         self.resize_and_move(x, y, w, h)
 
-    def set_properties(self,properties):
+    def set_properties(self, properties):
         proparg = ",".join(properties)
-        os.system('wmctrl -i -r %s -b %s' % (self.id,proparg))
+        os.system('wmctrl -i -r %s -b %s' % (self.id, proparg))
 
     def moveto_desktop(self, desktopn):
         # begin with 0
@@ -100,12 +100,14 @@ def _wm_window_role(winid):
     else:
         return value.strip('"')
 
-def strip_prefix (prefix, word):
+
+def strip_prefix(prefix, word):
     if word.startswith(prefix):
         return word[len(prefix):]
     return word
 
-def _wm_state (winid):
+
+def _wm_state(winid):
     out = getoutput('xprop -id %s _NET_WM_STATE' % winid)
     try:
         _, value = out.split(' = ')
@@ -113,5 +115,5 @@ def _wm_state (winid):
         # probably xprop returned an error
         return []
     else:
-        return [strip_prefix("_NET_WM_STATE_",s).lower()
+        return [strip_prefix("_NET_WM_STATE_", s).lower()
                 for s in value.split(', ')]
