@@ -79,6 +79,17 @@ class Window(BaseWindow):
         proparg = ",".join(properties)
         os.system('wmctrl -i -r %s -b %s' % (self.id,proparg))
 
+    def moveto_desktop(self, desktopn):
+        # begin with 0
+        os.system('wmctrl -i -r %s -t %s' % (self.id, desktopn - 1))
+
+    def hide(self):
+        os.system('xdotool windowunmap %s' % (self.id,))
+
+    def show(self):
+        os.system('xdotool windowmap %s' % (self.id,))
+
+
 def _wm_window_role(winid):
     out = getoutput('xprop -id %s WM_WINDOW_ROLE' % winid)
     try:
