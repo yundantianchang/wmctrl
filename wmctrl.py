@@ -1,9 +1,9 @@
+#!/usr/bin/env python3
+
 import os
-from commands import getoutput
-try:
-    from collections import namedtuple
-except ImportError:
-    from namedtuple import namedtuple
+from subprocess import getoutput
+from collections import namedtuple
+
 
 BaseWindow = namedtuple('Window', 'id desktop pid x y w h wm_class host wm_name wm_window_role wm_state')
 
@@ -15,10 +15,10 @@ class Window(BaseWindow):
         windows = []
         for line in out.splitlines():
             parts = line.split(None, len(Window._fields)-3)
-            parts = map(str.strip, parts)
-            parts[1:7] = map(int, parts[1:7])
             if len(parts) == 9: # title is missing
                 parts.append('')
+            parts = list(map(str.strip, parts))
+            parts[1:7] = list(map(int, parts[1:7]))
             parts.append(_wm_window_role(parts[0]))
             parts.append(_wm_state(parts[0]))
             windows.append(cls(*parts))
@@ -71,8 +71,8 @@ class Window(BaseWindow):
 
     def set_geometry(self, geometry):
         dim, pos = geometry.split('+', 1)
-        w, h = map(int, dim.split('x'))
-        x, y = map(int, pos.split('+'))
+        w, h = list(map(int, dim.split('x')))
+        x, y = list(map(int, pos.split('+')))
         self.resize_and_move(x, y, w, h)
 
     def set_properties(self,properties):
