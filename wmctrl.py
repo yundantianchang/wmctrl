@@ -89,6 +89,12 @@ class Window(BaseWindow):
     def show(self):
         os.system('xdotool windowmap %s' % (self.id,))
 
+    def decorate(self):
+        os.system('xprop -id %s  -f _MOTIF_WM_HINTS 32c -set  _MOTIF_WM_HINTS "0x2, 0x0, 0x1, 0x0, 0x0"' % (self.id,))
+
+    def undecorate(self):
+        os.system('xprop -id %s  -f _MOTIF_WM_HINTS 32c -set  _MOTIF_WM_HINTS "0x2, 0x0, 0x0, 0x0, 0x0"' % (self.id,))
+
 
 def _wm_window_role(winid):
     out = getoutput('xprop -id %s WM_WINDOW_ROLE' % winid)
